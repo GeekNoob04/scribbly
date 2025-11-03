@@ -1,0 +1,9 @@
+{
+    "manifest_version": 3,
+    "name": "Scribbly",
+    "version": "1.0",
+    "description": "A simple and elegant note-taking extension.",
+    "action": {
+        "default_popup": "index.html"
+    }
+}

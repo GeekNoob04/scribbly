@@ -1,9 +1,20 @@
-import { useState } from "react";
+/* global chrome */
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
     const [text, setText] = useState("");
     const [notes, setNotes] = useState([]);
+    // showing from chrome storage
+    useEffect(() => {
+        chrome.storage.sync.get({ notes: [] }, (data) => {
+            setNotes(data.notes);
+        });
+    }, []);
+    // storing on chrome storage
+    useEffect(() => {
+        chrome.storage.sync.set({ notes });
+    }, [notes]);
 
     const addNote = () => {
         if (!text.trim()) return;

@@ -7,24 +7,33 @@ function App() {
     const [notes, setNotes] = useState([]);
     // showing from chrome storage
     useEffect(() => {
-        chrome.storage.sync.get({ notes: [] }, (data) => {
-            setNotes(data.notes);
-        });
+        if (chrome?.storage?.sync) {
+            chrome?.storage?.sync.get({ notes: [] }, (data) => {
+                setNotes(data.notes);
+            });
+        } else {
+            const stored = localStorage.getItem("notes");
+            if (stored) setNotes(JSON.parse(stored));
+        }
     }, []);
     // storing on chrome storage
     useEffect(() => {
-        chrome.storage.sync.set({ notes });
+        if (!chrome?.storage?.sync) {
+            chrome?.storage?.sync.set({ notes });
+        } else {
+            localStorage.setItem("notes", JSON.stringify(notes));
+        }
     }, [notes]);
 
     const addNote = () => {
         if (!text.trim()) return;
         const newNote = { id: Date.now(), text: text.trim() };
-        setNotes([newNote, ...notes]);
+        setNotes((prev) => [newNote, ...prev]);
         setText("");
     };
 
     const deleteNote = (id) => {
-        setNotes(notes.filter((note) => note.id !== id));
+        setNotes((prev) => prev.filter((note) => note.id !== id));
     };
 
     return (
